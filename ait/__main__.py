@@ -1,3 +1,3 @@
-from .algo import main
+from .src.algo import main
 
 main()
