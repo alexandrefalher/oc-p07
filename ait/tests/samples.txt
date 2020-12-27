@@ -1,0 +1,21 @@
+Shares #	Cost per share (in Euros)	Profit (post 2 years)
+Share-1	    15	                        10%
+Share-2	    25	                        15%
+Share-3	    35	                        20%
+Share-4	    30	                        17%
+Share-5	    40	                        25%
+Share-6	    11	                        7%
+Share-7	    13	                        11%
+Share-8	    24                          13%
+Share-9	    17	                        27%
+Share-10	21	                        17%
+Share-11    55	                        9%
+Share-12	19	                        23%
+Share-13	07	                        1%
+Share-14	09	                        3%
+Share-15	04	                        8%
+Share-16	02	                        12%
+Share-17 	05	                        14%
+Share-18	12 	                        21%
+Share-19	57	                        18%
+Share-20	10                          5%
