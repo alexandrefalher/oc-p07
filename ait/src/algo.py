@@ -19,20 +19,20 @@ def main():
 def get_combination(shares: ShareHolder, combinations: ShareHolder, limit: float) -> CombinationResult:
     if len(shares) > 0:
         shares_temp: ShareHolder = shares.copy()
-        combination_result_1: CombinationResult = get_combination(shares_temp, combinations.copy().append(shares_temp.remove(0)), limit)
-        combination_result_2: CombinationResult = get_combination(shares_temp, combinations, limit)
-        if combination_result_1.total_profit > combination_result_2.total_profit:
-            return combination_result_1
+        result_1: CombinationResult = get_combination(shares_temp, combinations.copy().append(shares_temp.remove(0)), limit)
+        result_2: CombinationResult = get_combination(shares_temp, combinations, limit)
+        if result_1.total_profit > result_2.total_profit:
+            return result_1
         else:
-            return combination_result_2
+            return result_2
     elif len(shares) == 0:
-        total_cost_shares_combinations: int = combinations.calculate_total_cost()
-        total_profit_current_shares_combination: float = combinations.calculate_final_value()
-        print_step(combinations, total_cost_shares_combinations, total_profit_current_shares_combination)
-        if total_cost_shares_combinations <= limit:
-            return CombinationResult(combinations, total_cost_shares_combinations, total_profit_current_shares_combination)
+        total_cost: int = combinations.calculate_total_cost()
+        total_profit: float = combinations.calculate_final_value()
+        print_step(combinations, total_cost, total_profit)
+        if total_cost <= limit:
+            return CombinationResult(combinations, total_cost, total_profit)
         else:
-            return CombinationResult(combinations, total_cost_shares_combinations, 0)
+            return CombinationResult(combinations, total_cost, 0)
 
 
 def print_step(combinations: ShareHolder, total_cost_shares_combinations: int, total_profit_current_shares_combination: float) -> None:
