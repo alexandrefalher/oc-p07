@@ -45,3 +45,10 @@ class ShareHolder:
     def copy(self) -> ShareHolder:
         copy: ShareHolder = ShareHolder(self.shares)
         return copy
+
+
+class CombinationResult:
+    def __init__(self, combinations: ShareHolder, total_cost: int, total_profit: float):
+        self.combinations: ShareHolder = combinations
+        self.total_cost: int = total_cost
+        self.total_profit: float = total_profit
