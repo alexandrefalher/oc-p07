@@ -1,6 +1,5 @@
 from io import TextIOWrapper
 import csv
-from pathlib import Path
 from typing import Dict, List
 
 
@@ -10,13 +9,12 @@ CSV_FIELD_SHARE_PROFIT: str = "Profit (post 2 years)"
 
 
 class Csv:
-
     def __init__(self) -> None:
-        self.path = Path("ait/tests/samples.csv")
+        pass
 
-    def read(self) -> Dict:
+    def read(self, path: str) -> Dict:
         result: Dict = dict()
-        with open(self.path, "r") as file:
+        with open(path, "r") as file:
             result = self.__read_in_csv_file(file)
         return result
 
