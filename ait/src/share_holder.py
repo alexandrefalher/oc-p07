@@ -19,10 +19,17 @@ class ShareHolder:
         self.shares.append(value)
         return self
 
-    def calculate_total_cost(self) -> int:
+    def filter(self, predicate: Callable[[Share], bool]) -> None:
+        while True:
+            if predicate(self.shares[0]):
+                del self.shares[0]
+            else:
+                return
+
+    def total_cost(self) -> int:
         return sum([share.cost for share in self.shares])
 
-    def calculate_final_value(self) -> float:
+    def total_profit(self) -> float:
         return sum([share.cost + share.benefices() for share in self.shares])
 
     def sort(self, key: Callable[[Share], Any], reverse: bool) -> None:

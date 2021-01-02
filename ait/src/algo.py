@@ -13,7 +13,7 @@ def main():
     sys.setrecursionlimit(150000)
     shares: ShareHolder = retrieve_data(CSV_PROD)
     # combination_result: CombinationResult = brute_force(shares, ShareHolder(), 500)
-    combination_result: CombinationResult = smart(shares)
+    combination_result: CombinationResult = smart_dyn(shares, 500)
     print("--------- RESULT ----------")
     print(combination_result.combinations)
     print("Total cost: ", combination_result.total_cost)
@@ -27,32 +27,33 @@ def brute_force(shares: ShareHolder, combinations: ShareHolder, limit: float) ->
         result_2: CombinationResult = brute_force(shares_temp, combinations, limit)
         return result_1 if result_1.total_profit > result_2.total_profit else result_2
     elif len(shares) == 0:
-        total_cost: int = combinations.calculate_total_cost()
-        total_profit: float = combinations.calculate_final_value()
+        total_cost: int = combinations.total_cost()
+        total_profit: float = combinations.total_profit()
         print_step(combinations, total_cost, total_profit)
         return CombinationResult(combinations, total_cost, total_profit) if total_cost <= limit else CombinationResult(combinations, total_cost, 0)
 
 
-def smart(shares: ShareHolder) -> CombinationResult:
+def smart_dyn(shares: ShareHolder, limit: int) -> CombinationResult:
+    shares.sort(key=lambda s: s.cost, reverse=True)
+    shares.filter(predicate=lambda s: s.cost > limit)
     shares.sort(key=lambda s: s.benefices(), reverse=True)
-    return smart_recursive(shares, ShareHolder(), -1, 500)
-
-
-def smart_recursive(shares: ShareHolder, combinations: ShareHolder, position: int, limit: int) -> CombinationResult:
-    if combinations.calculate_total_cost() < limit:
-        if position < len(shares) - 1:
-            smart_recursive(shares, combinations.append(shares[position + 1]), position + 1, limit)
-        else:
+    can_continue: bool = True
+    i: int = 0
+    combinations: ShareHolder = ShareHolder()
+    while can_continue:
+        if combinations.total_cost() > limit:
             pass
-    elif combinations.calculate_total_cost() > limit:
-        smart_recursive(shares.remove(position), combinations.remove(len(combinations) - 1), position - 1, limit)
-    return CombinationResult(combinations, combinations.calculate_total_cost(), combinations.calculate_final_value())
+        elif combinations.total_cost() < limit:
+            combinations.append(shares[i])
+            i += 1
+        else:
+            return CombinationResult(combinations, combinations.total_cost(), combinations.total_profit())
 
 
-def print_step(combinations: ShareHolder, total_cost_shares_combinations: int, total_profit_current_shares_combination: float) -> None:
+def print_step(combinations: ShareHolder, total_cost: int, total_profit: float) -> None:
     print(combinations)
-    print("Total cost: ", total_cost_shares_combinations)
-    print("Total profit: ", total_profit_current_shares_combination)
+    print("Total cost: ", total_cost)
+    print("Total profit: ", total_profit)
     print("----------\n")
 
 
