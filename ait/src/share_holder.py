@@ -7,9 +7,15 @@ class ShareHolder:
     def __init__(self, shares: List[Share] = []):
         self.shares: List[Share] = [Share(share.name, share.cost, share.profit) for share in shares]
 
-    def pop(self, index: int) -> Share:
-        share: Share = self.shares.pop(index)
-        return share
+    @property
+    def empty(self):
+        return True if len(self.shares) == 0 else False
+
+    def pop(self, index: int = None) -> Share:
+        if index is None:
+            return self.shares.pop(len(self.shares) - 1)
+        else:
+            return self.shares.pop(index)
 
     def remove(self, index: int) -> ShareHolder:
         self.shares.pop(index)
@@ -25,6 +31,12 @@ class ShareHolder:
                 del self.shares[0]
             else:
                 return
+
+    def clear(self) -> None:
+        self.shares = []
+
+    def insert(self, index: int, share: Share) -> None:
+        self.shares.insert(index, share)
 
     def total_cost(self) -> int:
         return sum([share.cost for share in self.shares])
