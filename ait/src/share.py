@@ -14,4 +14,4 @@ class Share:
         return self.benefices() > other.benefices()
 
     def __eq__(self, other: Share) -> bool:
-        return self.benefices() == other.benefices()
+        return self.cost == other.cost and self.profit == other.profit

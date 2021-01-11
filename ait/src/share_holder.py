@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, List
+from typing import Any, Callable, List, OrderedDict
 from ait.src.share import Share
 
 
@@ -25,12 +25,21 @@ class ShareHolder:
         self.shares.append(value)
         return self
 
-    def filter(self, predicate: Callable[[Share], bool]) -> None:
-        while True:
-            if predicate(self.shares[0]):
-                del self.shares[0]
-            else:
-                return
+    def filter(self, predicate: Callable[[Share], bool]) -> ShareHolder:
+        new_share_holder: ShareHolder = ShareHolder()
+        for share in self.shares:
+            if not predicate(share):
+                new_share_holder.append(share)
+        return new_share_holder
+
+    def distinct(self) -> None:
+        for i, share_reference in enumerate(self.shares):
+            j: int = i + 1
+            while j < len(self.shares):
+                if self.shares[j].cost == share_reference.cost and self.shares[j].profit == share_reference.profit:
+                    self.shares.pop(j)
+                else:
+                    break
 
     def clear(self) -> None:
         self.shares = []
@@ -44,7 +53,7 @@ class ShareHolder:
     def total_profit(self) -> float:
         return sum([share.cost + share.benefices() for share in self.shares])
 
-    def sort(self, key: Callable[[Share], Any], reverse: bool) -> None:
+    def sort(self, key: Callable[[Share], Any], reverse: bool = True) -> None:
         self.shares.sort(key=key, reverse=reverse)
 
     def __str__(self) -> str:
