@@ -9,18 +9,16 @@ CSV_PROD = "dataFinance.csv"
 
 
 def main():
+    wallet: float = 500
+
     shares: ShareHolder = retrieve_data(CSV_SAMPLES)
-    # result: ShareHolder = brute_force(shares, ShareHolder(), 500)
-    result: ShareHolder = smarter_brute_force(shares, ShareHolder(), 500)
-    result: ShareHolder = dynamic(shares, ShareHolder(), 500)
+    # result: ShareHolder = brute_force(shares, ShareHolder(), wallet)
+    result: ShareHolder = smarter_brute_force(shares, ShareHolder(), wallet)
     display(result)
 
     shares: ShareHolder = retrieve_data(CSV_PROD)
-    # shares = shares.filter(predicate=lambda s: s.cost > 500 or s.cost == 0)
-    # shares.sort(key=lambda s: s.cost, reverse=False)
-    # shares.distinct()
-    # result: ShareHolder = recurse(shares, ShareHolder(), 500)
-    result: ShareHolder = dynamic(shares, ShareHolder(), 500)
+    result: ShareHolder = dynamic(shares, ShareHolder(), wallet)
+    # result: ShareHolder = recurse_call(shares, wallet)
     display(result)
 
 
@@ -49,21 +47,6 @@ def smarter_brute_force(shares: ShareHolder, combinations: ShareHolder, wallet: 
     return max([r1, r2], key=lambda sh: sh.total_profit())
 
 
-def recurse(shares: ShareHolder, combinations: ShareHolder, wallet: float, need_filter: bool = True) -> ShareHolder:
-    filtered_shares: ShareHolder = shares
-    if need_filter:
-        filtered_shares = shares.filter(predicate=lambda s: s.cost > wallet)
-    if filtered_shares.empty or wallet == 0:
-        return combinations
-    r1: ShareHolder = ShareHolder()
-    current_share: Share = filtered_shares.pop(0)
-    wallet_new: float = wallet - current_share.cost
-    if wallet_new >= 0:
-        r1 = recurse(filtered_shares, combinations.append(current_share), wallet_new)
-    r2 = recurse(filtered_shares, combinations, wallet, False)
-    return max([r1, r2], key=lambda sh: sh.total_profit())
-
-
 def dynamic(shares: ShareHolder, combinations: ShareHolder, wallet: float) -> ShareHolder:
     shares.sort(key=lambda s: s.benefices(), reverse=True)
     for share in shares:
@@ -78,6 +61,29 @@ def dynamic(shares: ShareHolder, combinations: ShareHolder, wallet: float) -> Sh
         else:
             shares.pop(0)
     return combinations
+
+
+def recurse_call(shares: ShareHolder, wallet: float) -> ShareHolder:
+    shares = shares.filter(predicate=lambda s: s.cost > 500 or s.cost == 0)
+    shares.sort(key=lambda s: s.cost, reverse=False)
+    shares.distinct()
+    result: ShareHolder = recurse(shares, ShareHolder(), 500)
+    return result
+
+
+def recurse(shares: ShareHolder, combinations: ShareHolder, wallet: float, need_filter: bool = True) -> ShareHolder:
+    filtered_shares: ShareHolder = shares
+    if need_filter:
+        filtered_shares = shares.filter(predicate=lambda s: s.cost > wallet)
+    if filtered_shares.empty or wallet == 0:
+        return combinations
+    r1: ShareHolder = ShareHolder()
+    current_share: Share = filtered_shares.pop(0)
+    wallet_new: float = wallet - current_share.cost
+    if wallet_new >= 0:
+        r1 = recurse(filtered_shares, combinations.append(current_share), wallet_new)
+    r2 = recurse(filtered_shares, combinations, wallet, False)
+    return max([r1, r2], key=lambda sh: sh.total_profit())
 
 
 def display(result: ShareHolder):
